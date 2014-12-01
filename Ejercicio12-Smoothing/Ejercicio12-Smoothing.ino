@@ -32,7 +32,7 @@ int readings[numReadings];      // the readings from the analog input
 int index = 0;                  // the index of the current reading
 int total = 0;                  // the running total
 int average = 0;                // the average
-int ledPin = 9;   //poner una resistencia de 220 ohms
+int ledPin = 9;   //use a 220 ohms resitance
 
 int inputPin = A0;
 
@@ -95,5 +95,5 @@ void loop() {
   }	
   } 
 lastOutputValue = outputValue;
-     
+  delay(50);    //wait 50ms for delay effect
 }
