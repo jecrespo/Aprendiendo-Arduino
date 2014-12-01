@@ -27,7 +27,7 @@
 // respond to the input.  Using a constant rather than a normal variable lets
 // use this value to determine the size of the readings array.
 const int numReadings = 10;
-
+unsigned long time = 0;
 int readings[numReadings];      // the readings from the analog input
 int index = 0;                  // the index of the current reading
 int total = 0;                  // the running total
@@ -40,6 +40,10 @@ int lastOutputValue = 0;
 
 void setup()
 {
+  Serial.println(------loop------);
+  Serial.print("tiempo de bucle: ");  //for counting loop time 
+  Serial.println(millis() - time);
+  time = millis()
   // initialize serial communication with computer:
   Serial.begin(9600);                   
   // initialize all the readings to 0: 
