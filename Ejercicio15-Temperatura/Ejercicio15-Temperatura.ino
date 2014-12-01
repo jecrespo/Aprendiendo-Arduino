@@ -11,7 +11,7 @@ void setup(){
 }
 
 void loop(){
-  int sensorVal = analogread(sensorPin);
+  int sensorVal = analogRead(sensorPin);
   float voltage = (sensorVal/1024.0)*5.0;
   float temperature = (voltage - 0.5)*100;
   
@@ -37,19 +37,24 @@ void loop(){
   }
   delay(1);
   
-  if (Serial.avaliable() > 0){
+  if (Serial.available() > 0){
     char caracterLeido = Serial.read();
-    Serial.print("Sensor Value: ");
-    Serial.print(sensorVal);
-    Serial.print(", Volts: ");
-    Serial.print(voltage);
-    if (caracterLeido == "c" || caracterLeido == "C"){
+    if (caracterLeido == 'c' || caracterLeido == 'C'){
+      Serial.print("Sensor Value: ");
+      Serial.print(sensorVal);
+      Serial.print(", Volts: ");
+      Serial.print(voltage);
       Serial.print(", degrees C: ");
       Serial.println(temperature);
     }
-    else if (caracterLeido == "f" || caracterLeido == "F"){
+    else if (caracterLeido == 'f' || caracterLeido == 'F'){
+      Serial.print("Sensor Value: ");
+      Serial.print(sensorVal);
+      Serial.print(", Volts: ");
+      Serial.print(voltage);
       Serial.print(", degrees F: ");
       Serial.println(temperature*1.8+32.0);
     }
     else Serial.println("Caracter incorrecto... c o C para celsius y f o F para fahrenheit");
+}
 }
