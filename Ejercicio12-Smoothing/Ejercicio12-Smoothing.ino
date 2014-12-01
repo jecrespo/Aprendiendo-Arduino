@@ -32,7 +32,7 @@ int readings[numReadings];      // the readings from the analog input
 int index = 0;                  // the index of the current reading
 int total = 0;                  // the running total
 int average = 0;                // the average
-int ledPin = 9;
+int ledPin = 9;   //poner una resistencia de 220 ohms
 
 int inputPin = A0;
 
