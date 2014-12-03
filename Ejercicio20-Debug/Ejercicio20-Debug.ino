@@ -1,4 +1,7 @@
 /* Version 0.1 beta */
+/////
+// TODO: Comprobar tiempos de loop, tamaño en flash y uso de memoria con la opcion de debug y verbose
+/////
 
 #define DEBUG 0
 #define VERBOSE 0

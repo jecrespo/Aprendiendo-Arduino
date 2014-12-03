@@ -11,6 +11,11 @@
  
  This example code is in the public domain.
  */
+ 
+/////
+// TODO: Hacer comparación de entre string y String. Y pasar datos por puerto serie y tratarlos como Strings.
+/////
+
 
 String stringOne, stringTwo;
 

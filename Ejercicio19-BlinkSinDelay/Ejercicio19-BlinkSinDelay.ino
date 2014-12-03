@@ -20,6 +20,11 @@
  
  http://www.arduino.cc/en/Tutorial/BlinkWithoutDelay
  */
+ 
+/////
+// TODO: Multitarea y a la vez recoger datos de sonda de temperatura o un boton.
+// Usar librería timer2 y otra
+/////
 
 // constants won't change. Used here to 
 // set pin numbers:
