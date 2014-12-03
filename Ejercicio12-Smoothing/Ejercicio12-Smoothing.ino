@@ -40,10 +40,6 @@ int lastOutputValue = 0;
 
 void setup()
 {
-  Serial.println(------loop------);
-  Serial.print("tiempo de bucle: ");  //for counting loop time 
-  Serial.println(millis() - time);
-  time = millis()
   // initialize serial communication with computer:
   Serial.begin(9600);                   
   // initialize all the readings to 0: 
@@ -52,6 +48,10 @@ void setup()
 }
 
 void loop() {
+  Serial.println("------loop------");
+  Serial.print("tiempo de bucle: ");  //for counting loop time 
+  Serial.println(millis() - time);
+  time = millis();
   // subtract the last reading:
   total= total - readings[index];         
   // read from the sensor:  
