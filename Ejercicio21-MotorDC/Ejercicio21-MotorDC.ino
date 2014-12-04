@@ -1,9 +1,9 @@
 //Ejercicio basado en los ejercicios 9 y 10 del libro Arduino Starter Kit
 
-const int switchPin = 10;
+//const int switchPin = 10;
 const int controlPin1 = 2;
 const int controlPin2 = 3;
-//const int enablePin = 9;
+const int enablePin = 9;
 const int direccionSwitchPin = 4;
 Const int onOffSwitchPin = 5;
 const int potPin = A0;
