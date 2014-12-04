@@ -38,11 +38,11 @@ void setup(){
 void loop(){
   // leo el boton de encendido/apagado del pin 2
   /*switchState = digitalRead(switchPin);
-   if ((switchState == HIGH)&& !encendido_apagado){	//Si est� el motor apagado y leo un pulso
+   if ((switchState == HIGH)&& !encendido_apagado){	//Si esta el motor apagado y leo un pulso
    	encendido_apagado = 1;
    	digitalWrite(motorPin, HIGH);
    }
-   if (switchState == HIGH)&& encendido_apagado){	//Si est� el motor encendido y leo un pulso
+   if (switchState == HIGH)&& encendido_apagado){	//Si esta el motor encendido y leo un pulso
    	encendido_apagado = 0;
    	digitalWrite(motorPin, LOW);
    }
@@ -125,6 +125,7 @@ void loop(){
     previousOnOffSwitchState = onOffSwitchState;
   }
   else {
+    Serial.println("Parada Emergencia!!!!!!!");
     analogWrite(enablePin,0);
   }
 }
