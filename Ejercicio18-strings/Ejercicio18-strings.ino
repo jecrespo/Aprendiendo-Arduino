@@ -11,27 +11,65 @@
  
  This example code is in the public domain.
  */
- 
-/////
-// TODO: Hacer comparación de entre string y String. Y pasar datos por puerto serie y tratarlos como Strings.
-/////
-
 
 String stringOne, stringTwo;
+char stringUno[] = {'e','s','t','e','\0'};  //Probad a quuitar el \0
+char stringDos[] = "aquel";
+String leidoA = "";
+String leidoNumero = "";
+int numeroLeido;
 
 void setup() {
   // Open serial communications and wait for port to open:
   Serial.begin(9600);
-  while (!Serial) {
-    ; // wait for serial port to connect. Needed for Leonardo only
-  }
-
-
+  char caracter_leido;
   stringOne = String("this");
   stringTwo = String("that");
+  //
+  ;
   // send an intro:
   Serial.println("\n\nComparing Strings:");
   Serial.println();
+  
+  Serial.println("Introduce el String A: ");
+  while (Serial.available() == 0){
+    //Ho hago nada
+  }
+  
+  do{
+    caracter_leido = Serial.read();
+    //Serial.println(caracter_leido);
+    //Serial.println(Serial.available());
+    leidoA += caracter_leido;
+    delay(5);
+  }  while (Serial.available() > 0);
+  
+  Serial.print("He leido: ");
+  Serial.println(leidoA);
+  
+  Serial.println("Introduce un numero");
+  
+   while (Serial.available() == 0){
+    //Ho hago nada
+  }
+  
+  do{
+    caracter_leido = Serial.read();
+    //Serial.println(caracter_leido);
+    //Serial.println(Serial.available());
+    leidoNumero += caracter_leido;
+    delay(5);
+  }  while (Serial.available() > 0);
+  
+  Serial.print("He leido: ");
+  Serial.println(leidoNumero);
+  
+  if (leidoNumero.toInt() != 0) {
+    numeroLeido=leidoNumero.toInt();
+    Serial.print("Tu numero multiplicado por 15 es: ");
+    Serial.println(numeroLeido*15);
+  }
+  else Serial.println("No has introducido un numero");
 
 }
 
@@ -40,15 +78,37 @@ void loop() {
   if (stringOne == "this") {
     Serial.println("StringOne == \"this\""); 
   }
+  //----------------------
+  if (stringUno == "este") {
+    Serial.println("StringUno == \"este\""); 
+  }
+  else Serial.println("Esta comparacion no funciona");
+  
+  const char este[] = "este";
+  Serial.println(stringUno);    //Esta sintaxis funciona
+  if (strcmp (stringUno,este)){
+    Serial.println("Esta comparacion si funciona");
+  }
+  
   // two strings not equal:
   if (stringOne != stringTwo) {
     Serial.println(stringOne + " =! " + stringTwo);
   }
+  //----------------------
+  if (stringUno != stringDos) {  //Ojo no estamos comparando las cadenas de caracteres sino los punteros
+    // Serial.println(stringUno + " =! " + stringDos);  //Error de compilacion
+    char resultado[30] = "";
+    strcat(resultado, stringUno);
+    strcat(resultado, " != ") ;
+    strcat(resultado, stringDos);
+    Serial.println(resultado);
+  }
+
 
   // two strings not equal (case sensitivity matters):
   stringOne = "This";
   stringTwo = "this";
-  if (stringOne != stringTwo) {
+  if (stringOne != stringTwo) {  
     Serial.println(stringOne + " =! " + stringTwo);
   }
   // you can also use equals() to see if two strings are the same:
