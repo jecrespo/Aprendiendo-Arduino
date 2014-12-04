@@ -1,4 +1,5 @@
 //Ejercicio basado en ejemplo 3 del libro incluido en el Arduino Starter Kit
+//TODO - Añadir histéresis en los cambios de estado. 
 const int sensorPin = A0;
 const float baselineTemp = 20.0;
 
