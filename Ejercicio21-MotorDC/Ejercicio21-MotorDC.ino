@@ -1,156 +1,143 @@
 //Ejercicio basado en los ejercicios 9 y 10 del libro Arduino Starter Kit
-#define SEGURIDAD 1
+//Modificaciones realizadas para:
+//* Añadir una rampa de arranque y otra de parada cuando se detecte el encendido y el apagado
+//* Añadir una rampa de arranque y parada cuando se detecte un cambio de dirección
+//* Añadir un boton de emergencia
 
-//const int switchPin = 10;
-const int controlPin1 = 2;
-const int controlPin2 = 3;
-const int enablePin = 9;
-const int directionSwitchPin = 4;
-const int onOffSwitchStateSwitchPin = 5;
-const int potPin = A0;
-const int emergenciaPin = 11;
+#define SEGURIDAD 1		//Habilita o deshabilita las rampas de arranque y parada
 
-int onOffSwitchState = 0;
-int previousOnOffSwitchState = 0;
-int directionSwitchState = 0;
-int previousDirectionSwitchState = 0;
+//CONSTANTES
+const int controlPin1 = 2;	//Pin de control conectado al pin7 del puente H
+const int controlPin2 = 3;	//Pin de control conectado al pin2 del puente H
+const int enablePin = 9;	//Pin activación conectado al pin1 del puente H
+const int directionSwitchPin = 4;	//Pin conectado al boton de direccion
+const int onOffSwitchStateSwitchPin = 5;	//Pin conectado al boton de envedido/apagado
+const int potPin = A0;	//Pin conectado al potenciometro
+const int emergenciaPin = 11;	//Pin conectado al botón de emergencia
 
-int motorEnabled = 0;
-int motorSpeed = 0;
-int motorDirection = 1;
-
-boolean cambiaEstado = 0;
-boolean cambiaDireccion = 0;
-
-//const int motorPin = 11;
-//int switchState = 0;
-//encendido_apagado = 0;
+//VARIABLES
+int onOffSwitchState = 0;	//Guardo el estado de encendido/apagado. Valor leido en el loop actual del boton.
+int previousOnOffSwitchState = 0;	//Guardo el estado anterior de encendido/apagado. Valor leido en el loop anterior.
+int directionSwitchState = 0;	//Guardo el estado de direccion (valores 1 y 0). Valor leido en el loop actual del boton.
+int previousDirectionSwitchState = 0;	//Guardo el estado anterior de direccion. Valor leido en el loop anterior.
+int motorEnabled = 0;	//Si el motor está activado o no
+int motorSpeed = 0;		//Velocidad del motor. Se actualiza en cada loop al leer el potenciometro.
+int motorDirection = 1;	//Valor de la dirección del motor
+int previousMotorSpeed = 0;	//Para detectar cambios en la velocidad del motor
 
 void setup(){
   Serial.begin(9600);
-  //pinMode(motorPin, OUTPUT);
-  //pinMode(switchPin, INPUT);
   pinMode(directionSwitchPin, INPUT);
   pinMode(onOffSwitchStateSwitchPin, INPUT);
   pinMode(controlPin1, OUTPUT);
   pinMode(controlPin2, OUTPUT);
   pinMode(enablePin, OUTPUT);
   pinMode(emergenciaPin, INPUT_PULLUP);
-  digitalWrite(enablePin, LOW);
+  digitalWrite(enablePin, LOW);	//Motor apagado en el setup
 }
 
 void loop(){
-  // leo el boton de encendido/apagado del pin 2
-  /*switchState = digitalRead(switchPin);
-   if ((switchState == HIGH)&& !encendido_apagado){	//Si esta el motor apagado y leo un pulso
-   	encendido_apagado = 1;
-   	digitalWrite(motorPin, HIGH);
-   }
-   if (switchState == HIGH)&& encendido_apagado){	//Si esta el motor encendido y leo un pulso
-   	encendido_apagado = 0;
-   	digitalWrite(motorPin, LOW);
-   }
-   */
-   
-  if (digitalRead(emergenciaPin) == HIGH){
+  if (digitalRead(emergenciaPin) == HIGH){	//PRIORITARIO, leo primero el boton de emergencia, solo ejecuto el control si está a 1
+    //Primero leo el estado de los botones y del potenciometro
     onOffSwitchState = digitalRead(onOffSwitchStateSwitchPin);
-    //Serial.println(onOffSwitchState);
     delay(1);
     directionSwitchState = digitalRead(directionSwitchPin);
     motorSpeed = analogRead(potPin)/4;
-    //Serial.println(motorSpeed);
-
+    //Si detecto cambio velocidad. Doy prioridad a esto sobre pulsar el boton.
+    if (previousMotorSpeed != motorSpeed){
+#if SEGURIDAD
+      rampa(previousMotorSpeed,motorSpeed);
+#else
+      analogWrite(enablePin, motorSpeed);
+#endif
+    }
+    //Si detecto flanco ascendente en el boton de arranque/parada
     if (onOffSwitchState != previousOnOffSwitchState){
       if (onOffSwitchState == HIGH){
         motorEnabled = !motorEnabled;
-		cambiaEstado = 1;
-		Serial.println("boton arranco....");
-      }
-    }
-
-    if (directionSwitchState != previousDirectionSwitchState) {
-      if ((directionSwitchState == HIGH)&& motorEnabled){
-        motorDirection = !motorDirection;
-		cambiaDireccion = 1;
-		Serial.println("boton cambio direccion...");
-      }
-    }
-
-    if ((motorDirection == 1)&& (cambiaDireccion) && motorEnabled){
+        Serial.println("Pulsado boton encendido/apagado....");
+        if (motorEnabled == 1) {	//Si toca arrancar
 #if SEGURIDAD
-	cambiaDireccion = 0;
-	Serial.println("cambio dir parada....");
-      //Parada en rampa
-      for (int i = motorSpeed; i > 0; i--){
-        analogWrite(enablePin,i);
-        delay(5);
-      }
+          rampa(0,motorSpeed);	//Rampa arranque
+#else
+          analogWrite(enablePin, motorSpeed);
+          Serial.println("Arranco Motor sin rampa")
 #endif
-      digitalWrite(controlPin1, HIGH);
-      digitalWrite(controlPin2, LOW);
+          }
+        else {	//Si toca parar
 #if SEGURIDAD
-      //Arranque en rampa
-	  Serial.println("cambio dir arranca....");
-      for (int i = 0; i < motorSpeed; i++){
-        analogWrite(enablePin,i);
-        delay(5);
-      }
-#endif   
-    }
-    else if ((motorDirection == 0)&& (cambiaDireccion) && motorEnabled) {
-#if SEGURIDAD
-	cambiaDireccion = 0;
-	Serial.println("cambio dir parada....");
-      //Parada en rampa
-      for (int i = motorSpeed; i > 0; i--){
-        analogWrite(enablePin,i);
-        Serial.println(i);
-        delay(5);
-      }
-#endif 
-      digitalWrite(controlPin1,LOW);
-      digitalWrite(controlPin2,HIGH);
-#if SEGURIDAD
-	Serial.println("cambio dir arranca....");
-      //Arranque en rampa
-      for (int i = 0; i < motorSpeed; i++){
-        analogWrite(enablePin,i);
-        Serial.println(i);
-        delay(5);
-      }
-#endif    
-    }
-
-    if ((motorEnabled == 1) && cambiaEstado){
-	cambiaEstado = 0;
-#if SEGURIDAD
-	Serial.println("arranca....");
-      //Arranque en rampa
-      for (int i = 0; i < motorSpeed; i++){
-        analogWrite(enablePin,i);
-        Serial.println(i);
-        delay(5);
-      }
-#endif    
-    }
-    else if ((motorEnabled == 0) && cambiaEstado){ 
-	cambiaEstado = 0;
-#if SEGURIDAD
-Serial.println("parada....");
-      //Parada en rampa
-      for (int i = motorSpeed; i > 0; i--){
-        analogWrite(enablePin,i);
-        Serial.println(i);
-        delay(5);
-      }
+          rampa(motorSpeed,0);	//Rampa parada
+#else
+          analogWrite(enablePin, 0);
+          Serial.println("Paro Motor sin rampa")
 #endif
-    }
-
+          }
+        }
+      }
+      //Si detecto flanco ascendente en el boton de arranque/parada
+      if (directionSwitchState != previousDirectionSwitchState) {	
+        if (directionSwitchState == HIGH){
+          motorDirection = !motorDirection;
+          Serial.println("Pulsado boton cambio de direccion...");
+          if (motorEnabled == 1){		//solo cambio sentido si el motor encendido pero si acumulo en cambio direccion
+            if (motorDirection == 1) {
+              Serial.println("cambio direccion parada....");
+#if SEGURIDAD
+              rampa(motorSpeed,0);	//Rampa parada
+#endif
+              digitalWrite(controlPin1, HIGH);
+              digitalWrite(controlPin2, LOW);
+              Serial.println("cambio direccion arranque....");
+#if SEGURIDAD
+              rampa(0,motorSpeed);	//Rampa arranque
+#endif
+            } 
+            else {
+              Serial.println("cambio direccion parada....");
+#if SEGURIDAD
+              rampa(motorSpeed,0);	//Rampa parada
+#endif
+              digitalWrite(controlPin1, LOW);
+              digitalWrite(controlPin2, HIGH);
+              Serial.println("cambio direccion arranque....");
+#if SEGURIDAD
+              rampa(0,motorSpeed);	//Rampa arranque
+#endif
+            }  
+          }
+        }
+      }
     previousDirectionSwitchState = directionSwitchState;
     previousOnOffSwitchState = onOffSwitchState;
+    previousMotorSpeed = motorSpeed;
   }
   else {
-    Serial.println("Parada Emergencia");
+    Serial.println("Parada Emergencia");	//Cuando está pulsado (función de seta mergencia), paro el motor inmediatamente
     analogWrite(enablePin,0);
+  }
+}
+
+void rampa(int velocidadInicio, int velocidadFin){
+  if (velocidadFin > velocidadInicio){
+    Serial.print("Rampa Ascendente de ");
+    Serial.print(velocidadInicio);
+    Serial.print(" a ");
+    Serial.println(velocidadFin);
+    for (int i = velocidadInicio; i <= velocidadFin; i++){
+      analogWrite(enablePin,i);
+      Serial.println(i);
+      delay(5);
+    }
+  }
+  else{
+    Serial.print("Rampa Descendente de ");
+    Serial.print(velocidadInicio);
+    Serial.print(" a ");
+    Serial.println(velocidadFin);
+    for (int i = velocidadInicio; i >= velocidadFin; i--){
+      analogWrite(enablePin,i);
+      Serial.println(i);
+      delay(5);
+    }
   }
 }
