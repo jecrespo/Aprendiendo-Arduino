@@ -28,10 +28,35 @@ void loop()
 {
 
 /*	Versi�n b�sica
-	if (mySerial.available())
-		Serial.write(mySerial.read());
-	if (Serial.available())
-		mySerial.write(Serial.read());
+
+#include <SoftwareSerial.h>
+SoftwareSerial mySerial(10, 11); // RX, TX
+
+void setup() {
+  Serial.begin(9600);
+  mySerial.begin (4800);	//probar a poner velocidades diferentes en cada punto.
+}
+void loop(){
+  if (mySerial.available()){
+    Serial.print((char)mySerial.read());
+  }
+  if (Serial.available()){
+    mySerial.print((char)Serial.read());
+  }
+}
+
+CON LCD
+lcd.autoscroll();	//Para que haga el scroll
+if (mySerial.available()){
+	char inChar = (char)mySerial.read();
+	Serial.write(inChar);
+	lcd.print(inChar);		//Solo con version LCD
+}
+if (Serial.available()){
+	char outChar = (char)Serial.read();
+	mySerial.write(outChar);
+	lcd.print(outChar);	//Solo con version LCD
+}
 */
 	
 	inputString = "";	//inicalizo el String
