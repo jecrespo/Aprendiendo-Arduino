@@ -40,6 +40,7 @@ int prevSwitchState = 0;
 int reply;
 
 void setup() {
+  Serial.begin(9600);
   // set up the number of columns and rows on the LCD 
   lcd.begin(16, 2);
 
@@ -53,6 +54,8 @@ void setup() {
   lcd.setCursor(0, 1);
   // print to the second line
   lcd.print("Crystal Ball!");
+  
+  Serial.println("Ask the Crystal Ball!");
 }
 
 void loop() {
@@ -62,7 +65,12 @@ void loop() {
   //Modified by #aprendiendoarduino
   if (Serial.available()) {
     reply = random(8);
-    delay(100);
+    //doy emoción a la respuesta :-)
+	for (int i=0;i<5;i++){
+		Serial.print(".");
+		delay(1000);
+	}
+	Serial.println(".");
     lcd.clear();
     lcd.home();
     int numero_caracter = 0;
@@ -80,30 +88,38 @@ void loop() {
     switch(reply){
     case 0:
       lcd.print("Yes");
+      Serial.println("Yes");
       break;
     case 1:
       lcd.print("Most likely");
+      Serial.println("Most likely");
       break;
     case 2:
       lcd.print("Certainly");
+      Serial.println("Certainly");
       break;
     case 3:
       lcd.print("Outlook good");
+      Serial.println("Outlook good");
       break;
     case 4:
       lcd.print("Unsure");
+      Serial.println("Unsure");
       break;
 
     case 5:
       lcd.print("Ask again");
+      Serial.println("Ask again");
       break;
 
     case 6:
       lcd.print("Doubtful");
+      Serial.println("Doubtful");
       break;
 
     case 7:
       lcd.print("No");
+      Serial.println("No");
       break;
     }
     delay(1000);
