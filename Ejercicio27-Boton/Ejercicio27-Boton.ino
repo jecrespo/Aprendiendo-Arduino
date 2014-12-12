@@ -1,15 +1,15 @@
 /*
 Web impresa:
-<!DOCTYPE html>
-<html>
-<body>
-  <p>Enciende un Led de Arduino</p>
-  <form action="http://192.168.1.179/enciendeled" method="get">
-  <input type="submit" value="Enciende Led" />
-  </form>
-</body>
-</html>
-*/
+ <!DOCTYPE html>
+ <html>
+ <body>
+ <p>Enciende un Led de Arduino</p>
+ <form action="http://192.168.1.179/enciendeled" method="get">
+ <input type="submit" value="Enciende Led" />
+ </form>
+ </body>
+ </html>
+ */
 
 #include <SPI.h>
 #include <Ethernet.h>
@@ -32,12 +32,16 @@ byte subnet[] = {
 // telnet defaults to port 23
 EthernetServer server = EthernetServer(80);
 String recibido = "";
+String GET = "GET / HTTP/1.1";
+String POST = "POST /enciendeled HTTP/1.1";
 
 void setup()
 {
   Serial.begin(9600);
   // initialize the ethernet device
   Ethernet.begin(mac, ip, gateway, subnet);
+  pinMode(8,OUTPUT);
+  digitalWrite(8,LOW);
 
   // start listening for clients
   server.begin();
@@ -45,6 +49,7 @@ void setup()
 
 void loop()
 {
+  recibido = ""; //Vacio el Buffer
   // if an incoming client connects, there will be bytes available to read:
   EthernetClient client = server.available();
   if (client) {
@@ -54,30 +59,56 @@ void loop()
     }
     Serial.println("He recibido por ethernet: ");
     Serial.println(recibido);
-    
 
-    // Despues de ller la petici�n, devuelvo la web embebida
-    // read bytes from the incoming client and write them back
-    // to any clients connected to the server:
-    client.println("<!DOCTYPE html>");
-    client.println("<html>");
-    client.println("<body>");
-    client.println("<p>Enciende un Led de Arduino</p>");
-    client.println("<form action=\"http://192.168.1.179/enciendeled\" method=\"post\">");
-    client.println("<input type=\"submit\" value=\"Enciende Led\" />");
-    client.println("</form>");
-    client.println("</body>");
-    client.println("</html>");
-    
-    client.stop();
-    client.flush();
-    
-    recibido = ""; //Vacio el Buffer
-    
-    
+    if (recibido.startsWith(GET)){
+      // Despues de ller la peticion, devuelvo la web embebida
+      // read bytes from the incoming client and write them back
+      // to any clients connected to the server:
+      client.println("HTTP/1.0 200K");
+      client.println();
+      client.println("<!DOCTYPE html>");
+      client.println("<html>");
+      client.println("<body>");
+      client.println("<p>Enciende un Led de Arduino</p>");
+      client.println("<form action=\"http://192.168.1.179/enciendeled\" method=\"post\">");
+      client.println("<input type=\"submit\" value=\"Enciende Led\" />");
+      client.println("</form>");
+      client.println("</body>");
+      client.println("</html>");
+      client.println();
+      client.stop();
+      client.flush();
+    }
+    else if (recibido.startsWith(POST)){
+      digitalWrite(8,HIGH);
+      client.println("HTTP/1.0 200K");
+      client.println();
+      client.println("<!DOCTYPE html>");
+      client.println("<html>");
+      client.println("<body>");
+      client.println("<p>LED ENCENDIDO!</p>");
+      client.println("</body>");
+      client.println("</html>");
+      client.println();
+      client.stop();
+      client.flush();
+    }
+    else{
+      client.println("HTTP/1.0 200K");
+      client.println();
+      client.println("<!DOCTYPE html>");
+      client.println("<html>");
+      client.println("<body>");
+      client.println("<p>ACCESO DENEGADO!</p>");
+      client.println("</body>");
+      client.println("</html>");
+      client.println();
+      client.stop();
+      client.flush();;
+    }
   }
-
 }
+
 
 
 
