@@ -9,13 +9,12 @@
 // this must be unique
 byte mac[] = { 0x90, 0xA2, 0xDA, 0x00, 0x59, 0x67 };  
 // change network settings to yours
-IPAddress ip( 192, 168, 2, 2 );    
-IPAddress gateway( 192, 168, 2, 1 );
+IPAddress ip( 192, 168, 1, 179 );    
+IPAddress gateway( 192, 168, 1, 1 );
 IPAddress subnet( 255, 255, 255, 0 );
 
 // change server to your email server ip or domain
-// IPAddress server( 1, 2, 3, 4 );
-char server[] = "email.yourdomain.com";
+IPAddress server( 192, 168, 1, 169 );
 
 EthernetClient client;
 
@@ -64,13 +63,13 @@ byte sendEmail()
   Serial.println(F("Sending From"));
 
 // change to your email address (sender)
-  client.println(F("MAIL From: <me@mydomain.com>"));
+  client.println(F("MAIL From: <arduino@raspberry>"));
 
   if(!eRcv()) return 0;
 
 // change to recipient address
   Serial.println(F("Sending To"));
-  client.println(F("RCPT To: <you@yourdomain.com>"));
+  client.println(F("RCPT To: <root@raspberry>"));
 
   if(!eRcv()) return 0;
 
@@ -82,10 +81,10 @@ byte sendEmail()
   Serial.println(F("Sending email"));
 
 // change to recipient address
-  client.println(F("To: You <you@yourdomain.com>"));
+  client.println(F("To: You <root@raspberry>"));
 
 // change to your address
-  client.println(F("From: Me <me@mydomain.com>"));
+  client.println(F("From: Me <arduino@raspberry>"));
 
   client.println(F("Subject: Arduino email test\r\n"));
 
