@@ -49,6 +49,7 @@ void setup()
 
 void loop()
 {
+  int led = digitalRead(8);
   recibido = ""; //Vacio el Buffer
   // if an incoming client connects, there will be bytes available to read:
   EthernetClient client = server.available();
@@ -60,8 +61,8 @@ void loop()
     Serial.println("He recibido por ethernet: ");
     Serial.println(recibido);
 
-    if (recibido.startsWith(GET)){
-      // Despues de ller la peticion, devuelvo la web embebida
+    if (recibido.startsWith("GET")){
+      // Despues de leer la peticion, devuelvo la web embebida
       // read bytes from the incoming client and write them back
       // to any clients connected to the server:
       client.println("HTTP/1.0 200K");
@@ -69,9 +70,11 @@ void loop()
       client.println("<!DOCTYPE html>");
       client.println("<html>");
       client.println("<body>");
-      client.println("<p>Enciende un Led de Arduino</p>");
+      if (led == HIGH) client.println("<p>Apaga un Led de Arduino</p>");
+      else client.println("<p>Enciende un Led de Arduino</p>");
       client.println("<form action=\"http://192.168.1.179/enciendeled\" method=\"post\">");
-      client.println("<input type=\"submit\" value=\"Enciende Led\" />");
+      if (led == HIGH) client.println("<input type=\"submit\" value=\"Apaga Led\" />");
+      else client.println("<input type=\"submit\" value=\"Enciende Led\" />");
       client.println("</form>");
       client.println("</body>");
       client.println("</html>");
@@ -79,14 +82,16 @@ void loop()
       client.stop();
       client.flush();
     }
-    else if (recibido.startsWith(POST)){
-      digitalWrite(8,HIGH);
+    else if (recibido.startsWith("POST")){
+      digitalWrite(8,!led);
       client.println("HTTP/1.0 200K");
       client.println();
       client.println("<!DOCTYPE html>");
       client.println("<html>");
       client.println("<body>");
-      client.println("<p>LED ENCENDIDO!</p>");
+      if (led == HIGH) client.println("<p>LED APAGADO!</p>");
+      else client.println("<p>LED ENCENDIDO!</p>");
+      client.println("<a href=\"\">Volver</a>");
       client.println("</body>");
       client.println("</html>");
       client.println();
