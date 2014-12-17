@@ -72,7 +72,7 @@ void loop()
       client.println("<body>");
       if (led == HIGH) client.println("<p>Apaga un Led de Arduino</p>");
       else client.println("<p>Enciende un Led de Arduino</p>");
-      client.println("<form action=\"http://192.168.1.179/enciendeled\" method=\"post\">");
+      client.println("<form action=\"\" method=\"post\">");
       if (led == HIGH) client.println("<input type=\"submit\" value=\"Apaga Led\" />");
       else client.println("<input type=\"submit\" value=\"Enciende Led\" />");
       client.println("</form>");
