@@ -25,7 +25,7 @@ struct StoreStruct {
   // they are stored completely.
 } settings = {
   // The default values
-  220, 1884,
+  HIGH, HIGH,
   'c',
   10000,
   {4.5, 5.5, 7, 8.5, 10, 12},
@@ -66,13 +66,13 @@ void setup() {
 }
 
 void loop() {
-  // [...]
-  int i = settings.c - 'a';
-  // [...]
+  digitalWrite(settings.e[4], settings.a);
+  digitalWrite(settings.e[5], settings.b);
+  
+  if (digitalRead(4) == LOW){
+	settings.a = LOW;
+	settings.b = LOW;
+	saveConfig();
+  }
 
-  // [...]
-  settings.c = 'a';
-  if (some_condition)
-    saveConfig();
-  // [...]
 }
