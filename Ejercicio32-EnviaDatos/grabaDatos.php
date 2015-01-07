@@ -1,24 +1,29 @@
 <?php
 
 //recojo variables
-$arduino = $_GET["arduino"];
-$temperatura = $_GET["temperatura"];
+if(isset($_GET["arduino"]) && isset($_GET["temperatura"])){
+	$arduino = $_GET["arduino"];
+	$temperatura = $_GET["temperatura"];
+}
+else{
+	die();
+}
 
-//Crear conexi髇 a la Base de Datos
+//Crear conexi贸n a la Base de Datos
 $conexion = mysql_connect("localhost","arduino","arduino");
 if (!$conexion){
-	die("Fallo la conexi髇 a la Base de Datos: " . mysql_error());
+	die("Fallo la conexi贸n a la Base de Datos: " . mysql_error());
 }
 
 // Seleccionar la Base de Datos a utilizar
 $seleccionar_bd = mysql_select_db("Arduino", $conexion);
 if (!$seleccionar_bd) {
-	die("Fallo la selecci髇 de la Base de Datos: " . mysql_error());
+	die("Fallo la selecci贸n de la Base de Datos: " . mysql_error());
 }
 
 // compruebo que la conexion es corecta
 if (!$conexion || !$seleccionar_bd) {
-	die('Unable to connect or select database!');
+	die('Fallo la conexi贸n o la selecci贸n de la Base de Datos: ');
 }
 
 $query = "INSERT INTO Datos (Fecha, Arduino, Temperatura) VALUES (CURRENT_TIMESTAMP, {$arduino}, {$temperatura})";
