@@ -1,7 +1,7 @@
 /* LoadAndSaveSettings
  * footswitch 2012-03-05, original code by Joghurt (2010)
  * Demonstrates how to load and save settings to the EEPROM
- * Tested on Arduino Uno R2 with Arduino 0023
+ * Modified for #aprendiendoarduino
  */
 // Contains EEPROM.read() and EEPROM.write()
 #include <EEPROM.h>
@@ -18,7 +18,7 @@ struct StoreStruct {
   int a, b;
   char c;
   long d;
-  float e[6];
+  int e[6];
   // This is for mere detection if they are your settings
   char version_of_program[4]; // it is the last variable of the struct
   // so when settings are saved, they will only be validated if
@@ -28,7 +28,7 @@ struct StoreStruct {
   HIGH, HIGH,
   'c',
   10000,
-  {4.5, 5.5, 7, 8.5, 10, 12},
+  {4, 5, 7, 8, 10, 12},
   CONFIG_VERSION
 };
 
@@ -60,16 +60,18 @@ void saveConfig() {
   }
 }
 
-
 void setup() {
   loadConfig();
+  pinMode(settings.e[4],OUTPUT);
+  pinMode(settings.e[5],OUTPUT);
+  pinMode(settings.e[0],INPUT_PULLUP);
 }
 
 void loop() {
   digitalWrite(settings.e[4], settings.a);
   digitalWrite(settings.e[5], settings.b);
   
-  if (digitalRead(4) == LOW){
+  if (digitalRead(settings.e[0]) == LOW){
 	settings.a = LOW;
 	settings.b = LOW;
 	saveConfig();
