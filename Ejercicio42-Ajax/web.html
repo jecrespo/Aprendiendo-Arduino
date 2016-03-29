@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<title>Ejemplo Ajax en Arduino</title>
+<style "type=text/css">
+	body {color: black;background-color: #D7DBDA;}
+	div {background-color: #006666; color: white; border: 1px solid black; padding: 5px; margin: 5px; height: auto;
+	width: 100px; border-radius: 10px; text-align: center; float: left; font-weight:bold;}
+	.cabecera {clear: left;}
+	.formulario {background-color: #004F00; width: auto;}
+	.oculto {background-color: transparent; border: none;}
+	.OFF {background-color: #006666;}
+	.ON {background-color: red;}
+	input, #boton {width: 80px; border-radius: 5px; font-weight:bold;text-align: center;}
+	#boton:hover{border: 3px solid black;}
+	#principal {background-color: #000F00;}
+</style>
+<script type="text/javascript">
+function update() {
+  var xhttp;
+  xhttp = new XMLHttpRequest();
+  xhttp.onreadystatechange = function() {
+    if (xhttp.readyState == 4 && xhttp.status == 200) {
+	  var json = JSON.parse(xhttp.responseText);
+	  document.getElementById("A0").innerHTML = json.arduino.A0;
+	  document.getElementById("A1").innerHTML = json.arduino.A1;
+	  document.getElementById("A2").innerHTML = json.arduino.A2;
+	  document.getElementById("D13").innerHTML = json.arduino.led;
+	  document.getElementById("D13").className = json.arduino.led;
+	  document.getElementById("boton").innerHTML = json.arduino.manual;
+	  document.getElementById("boton").className = json.arduino.manual;
+	  document.getElementById("dato_input").value = json.arduino.umbral;
+    }
+  };
+  xhttp.open("GET", "http://192.168.1.179/ajax", true);
+  xhttp.send();   
+}
+function boton_manual(){
+	var xhttp;
+	xhttp = new XMLHttpRequest();
+	var boton = document.getElementById("boton").innerHTML;
+	if (boton == "ON" ){
+		boton = "OFF";
+		document.getElementById("boton").className = 'OFF';
+	} 
+	else {
+		boton = "ON";
+		document.getElementById("boton").className = 'ON';
+	}
+	document.getElementById("boton").innerHTML = boton;
+	var url = "http://192.168.1.179/boton/" + boton;
+	xhttp.open("GET", url, true);
+	xhttp.send();
+	update();
+}
+function cambia_umbral(){
+	var xhttp;
+    xhttp = new XMLHttpRequest();
+	var valor= document.getElementById("dato_input").value;
+	var url = "http://192.168.1.179/umbral/" + valor;
+	xhttp.open("GET", url, true);
+	xhttp.send();
+	setTimeout(function(){update()},500); //Retraso 500ms el update para evitar efectos raros
+}
+function cambiaIntervalo(tiempo){
+	if (tiempo==0) clearInterval(id_interval);
+	else id_interval = setInterval('update()',tiempo);
+}
+var id_interval = setInterval('update()',5000);
+//window.onload = update();
+</script>
+</head>
+<body>
+<div id = "principal" class="formulario">
+<h2>Ejemplo Ajax en Arduino</h2>
+<div id="datos" class="formulario">
+<p>DATOS</p>
+<div class="cabecera">
+Entrada A0
+</div>
+<div id="A0">
+N/A
+</div>
+<div class="cabecera">
+Entrada A1
+</div>
+<div id="A1">
+N/A
+</div>
+<div class="cabecera">
+Entrada A2
+</div>
+<div id="A2">
+N/A
+</div>
+<div class="cabecera">
+Led
+</div>
+<div id="D13" class="ON">
+ON
+</div>
+</div>
+<div class="formulario">
+<p>CONFIGURACION</p>
+<div class="cabecera">
+Umbral Entrada A1
+</div>
+<div id="umbral" class="oculto">
+<input id="dato_input" type="number" onchange="cambia_umbral()" value="70" onmouseover="cambiaIntervalo(0)" onmouseout="cambiaIntervalo(5000)">
+</div>
+<div class="cabecera">
+Boton Manual
+</div>
+<div id="boton" onclick="boton_manual()" onmouseover="cambiaIntervalo(0)" onmouseout="cambiaIntervalo(5000)" >OFF</div>
+</div>
+</div>
+</body>
+</html>
