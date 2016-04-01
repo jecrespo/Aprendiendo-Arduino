@@ -42,7 +42,7 @@ void muestroWeb(EthernetClient &client_web) {
   client_web.print(F("if (xhttp.readyState == 4 && xhttp.status == 200) {var json = JSON.parse(xhttp.responseText);"));
   client_web.print(F("document.getElementById(\"A0\").innerHTML = json.arduino.A0;"));
   client_web.print(F("document.getElementById(\"A1\").innerHTML = json.arduino.A1;"));
-  client_web.print(F("document.getElementById(\"A2\").innerHTML = json.Sarduino.A2;"));
+  client_web.print(F("document.getElementById(\"A2\").innerHTML = json.arduino.A2;"));
   client_web.print(F("document.getElementById(\"D13\").innerHTML = json.arduino.led;"));
   client_web.print(F("document.getElementById(\"D13\").className = json.arduino.led;"));
   client_web.print(F("document.getElementById(\"boton\").innerHTML = json.arduino.manual;"));
@@ -78,7 +78,7 @@ void muestroWeb(EthernetClient &client_web) {
   client_web.print("N/A");
   client_web.print(F("</div><div class=\"cabecera\">Entrada A2</div><div id=\"A2\">"));
   client_web.print("N/A");
-  client_web.print(F(" %</div><div class=\"cabecera\">Led</div><div id=\"D13\" "));
+  client_web.print(F("</div><div class=\"cabecera\">Led</div><div id=\"D13\" "));
   led ? client_web.print(F("class=\"ON\">ON")) : client_web.print(F("class=\"OFF\">OFF"));
   client_web.print(F("</div></div><div class=\"formulario\"><p>CONFIGURACION</p><div class=\"cabecera\">Umbral Entrada A1</div>"));
   client_web.print(F("<div id=\"umbral\" class=\"oculto\"><input id=\"dato_input\" type=\"number\" onchange=\"cambia_umbral()\" value=\""));
@@ -118,6 +118,9 @@ void muestroAjax(EthernetClient &client_ajax) {
 
 void cambioManual(EthernetClient &client_ajax, String valor) {
   boolean resultado = 1;
+#if DEBUG
+  Serial.println(valor);
+#endif
   if (valor == "ON") {
     manual = 1;
     led = 1;
@@ -183,7 +186,7 @@ void loop()
     digitalWrite(13, led);
     Serial.println("Enciendo Led");
   }
-  if (((lectura_A1) < (umbral - 100)) && led && !manual) //hiteresis = 100
+  if (((lectura_A1) < (umbral + 10)) && led && !manual) //hiteresis = 10
   {
     led = 0;
     digitalWrite(13, led);
@@ -208,7 +211,7 @@ void loop()
 #endif
     if (request.startsWith("GET / HTTP")) muestroWeb(client);
     else if (request.startsWith("GET /ajax HTTP")) muestroAjax(client);
-    else if (request.startsWith("GET /boton/")) cambioManual(client, request.substring(16, request.indexOf(" HTTP/1.1")));
+    else if (request.startsWith("GET /boton/")) cambioManual(client, request.substring(11, request.indexOf(" HTTP/1.1")));
     else if (request.startsWith("GET /umbral/")) cambioUmbral(client, request.substring(12, request.indexOf(" HTTP/1.1")));
     else {
       //NO MUESTRO NADA
