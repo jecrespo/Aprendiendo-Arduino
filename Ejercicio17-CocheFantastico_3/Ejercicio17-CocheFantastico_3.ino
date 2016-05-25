@@ -27,6 +27,7 @@ void loop() {
    delay(timer);
    digitalWrite(pinArray[count], LOW);
    delay(timer*2);
+   //timer = analogRead(A0);	//El valor leido por analog read es el temporizador
   }
   for (count=5;count>0;count--) {
    digitalWrite(pinArray[count], HIGH);
@@ -35,5 +36,6 @@ void loop() {
    delay(timer);
    digitalWrite(pinArray[count], LOW);
    delay(timer*2);
+   //timer = analogRead(A0);	//El valor leido por analog read es el temporizador
   }
 }

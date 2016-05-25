@@ -27,6 +27,9 @@ void setup(){
 }
 
 void loop() {
+
+   //timer = analogRead(A0);	//El valor leido por analog read es el temporizador
+   
    digitalWrite(pin2, HIGH);
    Serial.println("Enciendo primer led");
    delay(timer);

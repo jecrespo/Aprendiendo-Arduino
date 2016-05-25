@@ -21,6 +21,7 @@ void setup(){
 }
 
 void loop() {
+  //timer = analogRead(A0);	//El valor leido por analog read es el temporizador
   for (count=0;count<6;count++) {
    digitalWrite(pinArray[count], HIGH);
    delay(timer);
