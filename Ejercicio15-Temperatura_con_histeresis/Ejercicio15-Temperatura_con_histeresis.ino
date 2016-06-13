@@ -1,7 +1,9 @@
 //Ejercicio basado en ejemplo 3 del libro incluido en el Arduino Starter Kit
-//TODO - Añadir histéresis en los cambios de estado. 
+//Se añade histeresis
+
 const int sensorPin = A0;
 const float baselineTemp = 20.0;
+int estado = 0;	//inicializo, pero para hacerlo bien debo inicializarlo en el setup leyendo la temperatura. En este caso lo trato en el else.
 
 void setup(){
   Serial.begin(9600);
@@ -16,25 +18,36 @@ void loop(){
   float voltage = (sensorVal/1024.0)*5.0;
   float temperature = (voltage - 0.5)*100;
   
-  if(temperature < baselineTemp){
+  // Estado 0 cuando la temperatura es menor que 20 o si vengo del estado 1 cuando es menor que 21
+  if((temperature < baselineTemp)||((estado == 1)&&(temperature < baselineTemp+1))){
     digitalWrite(2, LOW);
-    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
     digitalWrite(4, LOW);
+	estado = 0;
   }
-  else if (temperature >= baselineTemp+2 && temperature < baselineTemp+4){
+  //Estado 1 cuando llego a 22 del estado 0, me mantengo hasta 24 o si vengo de estado 2 vuelvo cuando bajo a 23
+  else if (((estado == 0) && (temperature >= baselineTemp+2)) || ((estado == 2)&&(temperature < baselineTemp+3))){
     digitalWrite(2, HIGH);
-    digitalWrite(2, LOW);
+    digitalWrite(3, LOW);
     digitalWrite(4, LOW);
+	estado = 1;
   }
-   else if (temperature >= baselineTemp+4 && temperature < baselineTemp+6){
+  //Estado 2 cuando llego a 24 del estado 1, me mantengo hasta 26 y vuelvo cuando bajo a 25
+   else if (((estado == 1) && (temperature >= baselineTemp+4)) || ((estado == 3)&&(temperature < baselineTemp+5))){
     digitalWrite(2, HIGH);
-    digitalWrite(2, HIGH);
+    digitalWrite(3, HIGH);
     digitalWrite(4, LOW);
+	estado = 2;
   }
+  //Estado 3 cuando la temperatura es mayor que 26
    else if (temperature >= baselineTemp+6){
     digitalWrite(2, HIGH);
-    digitalWrite(2, HIGH);
+    digitalWrite(3, HIGH);
     digitalWrite(4, HIGH);
+	estado = 3;
+  }
+  else {	//Para tratar el resto de casos, por ejemplo cuando hay saltos muy grandes de temperatura o en el primer loop
+	//Condiciones con if, elseif 
   }
   delay(1);
   
