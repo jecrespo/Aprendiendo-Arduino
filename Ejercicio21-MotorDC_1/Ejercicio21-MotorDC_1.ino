@@ -1,4 +1,5 @@
 //Ejercicio basado en los ejercicios 9 y 10 del libro Arduino Starter Kit
+//Version original
 
 //const int switchPin = 10;
 const int controlPin1 = 2;

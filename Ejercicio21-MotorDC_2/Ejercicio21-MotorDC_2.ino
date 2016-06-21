@@ -1,4 +1,5 @@
 //Ejercicio basado en los ejercicios 9 y 10 del libro Arduino Starter Kit
+//Añadidas mejoras
 #define SEGURIDAD 1
 
 //const int switchPin = 10;

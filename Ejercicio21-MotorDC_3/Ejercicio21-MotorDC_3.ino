@@ -1,4 +1,5 @@
 //Ejercicio basado en los ejercicios 9 y 10 del libro Arduino Starter Kit
+//Proyecto Motor DC
 //Modificaciones realizadas para:
 //* Añadir una rampa de arranque y otra de parada cuando se detecte el encendido y el apagado
 //* Añadir una rampa de arranque y parada cuando se detecte un cambio de dirección
