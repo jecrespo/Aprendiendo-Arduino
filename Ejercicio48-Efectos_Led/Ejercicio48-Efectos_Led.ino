@@ -27,4 +27,14 @@ void loop() {
     digitalWrite(pinArray[count], LOW);
     delay(timer);
   }
+  for (count = 5; count >= 0; count--) {
+    //timer = analogRead(A0);
+    digitalWrite(pinArray[count], HIGH);
+    delay(timer);
+  }
+  for (count = 5; count >= 0; count--) {
+    //timer = analogRead(A0);
+    digitalWrite(pinArray[count], LOW);
+    delay(timer);
+  }
 }
