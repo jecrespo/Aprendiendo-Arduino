@@ -1,15 +1,20 @@
+#include <EEPROM.h>
+
 unsigned long time;
 
-void setup(){
+void setup() {
   Serial.begin(9600);
   Serial.println(" ----------------------Setup--------------------");
   Serial.print(micros());
   Serial.println(" us");
+  for (int i = 0; i < 1000; i++) {
+    EEPROM.write(i, 'a');
+  }
 }
 
-void loop(){
+void loop() {
   Serial.println(" ----------------------Loop--------------------");
- 
+
   time = millis();
   Serial.println("Arduino es una plataforma de hardware libre, basada en una placa con un microcontrolador y un entorno de desarrollo, diseñada para facilitar el uso");
   Serial.println("de la electrónica en proyectos multidisciplinares.El hardware consiste en una placa con un microcontrolador Atmel AVR y puertos de entrada/salida.4");
@@ -35,6 +40,21 @@ void loop(){
   Serial.println(F("CortexM3 usan 3,3V, a diferencia de la mayoría de las placas con AVR que generalmente usan 5V. Sin embargo ya anteriormente se lanzaron placas Arduino"));
   Serial.println(F("con Atmel AVR a 3,3V como la Arduino Fio y existen compatibles de Arduino Nano y Pro como Meduino en que se puede conmutar el voltaje."));
   Serial.print(F("---------------------------> Tiempo de lectura/escritura en Flash: "));
+  Serial.print(millis() - time);
+  Serial.println(" ms");
+
+  time = millis();
+  for (int i = 0; i < 1000; i++) {
+    Serial.print(EEPROM.read(i));
+  }
+  Serial.println();
+  Serial.print(millis() - time);
+  Serial.println(" ms");
+
+  for (int i = 0; i < 1000; i++) {
+    EEPROM.read(i);
+  }
+  Serial.println();
   Serial.print(millis() - time);
   Serial.println(" ms");
 
