@@ -20,15 +20,15 @@ byte mac[] = {
 };
 //the IP address for the shield:
 byte ip[] = {
-  192, 168, 1, 179
+  10, 22, 72, 30
 };
 // the router's gateway address:
 byte gateway[] = {
-  192, 168, 1, 1
+  10, 22, 72, 1
 };
 // the subnet:
 byte subnet[] = {
-  255, 255, 255, 0
+  255, 255, 255, 192
 };
 
 EthernetServer server = EthernetServer(80);

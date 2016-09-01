@@ -16,7 +16,7 @@
 
 //Configuración Ethernet
 byte mac[] = {
-  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xAA  //Sustituir YY por el numero de MAC correcto
+  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xYY  //Sustituir YY por el numero de MAC correcto
 };
 
 EthernetServer server = EthernetServer(80);

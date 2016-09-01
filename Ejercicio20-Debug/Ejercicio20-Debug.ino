@@ -19,6 +19,7 @@ int variable = "error"
 #endif
 
 void setup(){
+  Serial.begin(9600);
   Serial.println(inicializa());
   Serial.println(freeRam());
 #if DEBUG  

@@ -10,16 +10,88 @@
 
 //----------------------- VARIABLES RED ------------------------//
 byte mac[] = {0x90, 0xA2, 0xDA, 0x0F, 0x70, 0x22};
-byte ip[] = {192, 168, 1, 179};
+byte ip[] = {10, 22, 72, 30};
 byte dns_server[] = {8, 8, 8, 8};
-byte gateway[] = {192, 168, 1, 1};
-byte subnet[] = {255, 255, 255, 0};
+byte gateway[] = {10, 22, 72, 1};
+byte subnet[] = {255, 255, 255, 192};
 EthernetServer server = EthernetServer(80);
 
 //----------------------- VARIABLES ------------------------//
 boolean led = 0; //0 = OFF, 1 = ON
 boolean manual = 0;  // 1 = que lo conecto manualmente
 int umbral = 1000;	//Valor por defecto
+
+//----------------------- SETUP ----------------------------//
+void setup()
+{
+  Serial.begin(9600);
+  Serial.println(F("Ejemplo Ajax en Arduino"));
+  Serial.print(F("Version: "));
+  Serial.println(VERSION);
+  Ethernet.begin(mac, ip, dns_server, gateway, subnet);
+  server.begin();
+  pinMode(13, OUTPUT);	//Built-in Led
+  digitalWrite(13, led);
+  pinMode(A0, INPUT);
+  pinMode(A1, INPUT);
+  pinMode(A2, INPUT);
+}
+
+//----------------------- LOOP -----------------------------//
+void loop()
+{
+  //Lectura datos
+  int lectura_A0 =  analogRead(A0);
+  int lectura_A1 =  analogRead(A1);
+  int lectura_A2 =  analogRead(A2);
+
+  if (((lectura_A1) > umbral) && !led && !manual) //Solo regulo si el no está en manual
+  {
+    led = 1;
+    digitalWrite(13, led);
+    Serial.println("Enciendo Led");
+  }
+  if (((lectura_A1) < (umbral + 10)) && led && !manual) //hiteresis = 10
+  {
+    led = 0;
+    digitalWrite(13, led);
+    Serial.println("Apago Led");
+  }
+
+  //WEB
+  EthernetClient client = server.available(); //Cliente conectado al servidor
+  if (client) {
+    String request = "";
+    while (client.available()) {
+      char c = client.read();
+      if (c == '\n') break;
+      else request += c;
+    }
+    while (client.available()) {  //como client.flush() no funciona, vacio el buffer
+      client.read();
+    }
+#if DEBUG
+    Serial.print(F("------------------------>  "));
+    Serial.println(request);
+#endif
+    if (request.startsWith("GET / HTTP")) muestroWeb(client);
+    else if (request.startsWith("GET /ajax HTTP")) muestroAjax(client);
+    else if (request.startsWith("GET /boton/")) cambioManual(client, request.substring(11, request.indexOf(" HTTP/1.1")));
+    else if (request.startsWith("GET /umbral/")) cambioUmbral(client, request.substring(12, request.indexOf(" HTTP/1.1")));
+    else {
+      //NO MUESTRO NADA
+      client.println(F("HTTP/1.1 200 OK"));
+      client.println(F("Content-Type: text/html\r\n"));
+      client.println();
+      client.println(F("Peticion no registrada"));
+#if DEBUG
+      Serial.println(F("Peticion no registrada"));
+#endif
+      client.flush();
+      client.stop();  //Cierro el cliente
+    }
+  }
+}
 
 //--------------------- FUNCTIONS --------------------------//
 
@@ -153,77 +225,4 @@ void cambioUmbral(EthernetClient &client_ajax, String valor) {
   resultado ? client_ajax.println(F("OK")) : client_ajax.println(F("KO"));
   client_ajax.flush();
   client_ajax.stop();  //Cierro el cliente
-}
-
-
-//----------------------- SETUP ----------------------------//
-void setup()
-{
-  Serial.begin(9600);
-  Serial.println(F("Ejemplo Ajax en Arduino"));
-  Serial.print(F("Version: "));
-  Serial.println(VERSION);
-  Ethernet.begin(mac, ip, dns_server, gateway, subnet);
-  server.begin();
-  pinMode(13, OUTPUT);	//Built-in Led
-  digitalWrite(13, led);
-  pinMode(A0, INPUT);
-  pinMode(A1, INPUT);
-  pinMode(A2, INPUT);
-}
-
-//----------------------- LOOP -----------------------------//
-void loop()
-{
-  //Lectura datos
-  int lectura_A0 =  analogRead(A0);
-  int lectura_A1 =  analogRead(A1);
-  int lectura_A2 =  analogRead(A2);
-
-  if (((lectura_A1) > umbral) && !led && !manual) //Solo regulo si el no está en manual
-  {
-    led = 1;
-    digitalWrite(13, led);
-    Serial.println("Enciendo Led");
-  }
-  if (((lectura_A1) < (umbral + 10)) && led && !manual) //hiteresis = 10
-  {
-    led = 0;
-    digitalWrite(13, led);
-    Serial.println("Apago Led");
-  }
-
-  //WEB
-  EthernetClient client = server.available(); //Cliente conectado al servidor
-  if (client) {
-    String request = "";
-    while (client.available()) {
-      char c = client.read();
-      if (c == '\n') break;
-      else request += c;
-    }
-    while (client.available()) {  //como client.flush() no funciona, vacio el buffer
-      client.read();
-    }
-#if DEBUG
-    Serial.print(F("------------------------>  "));
-    Serial.println(request);
-#endif
-    if (request.startsWith("GET / HTTP")) muestroWeb(client);
-    else if (request.startsWith("GET /ajax HTTP")) muestroAjax(client);
-    else if (request.startsWith("GET /boton/")) cambioManual(client, request.substring(11, request.indexOf(" HTTP/1.1")));
-    else if (request.startsWith("GET /umbral/")) cambioUmbral(client, request.substring(12, request.indexOf(" HTTP/1.1")));
-    else {
-      //NO MUESTRO NADA
-      client.println(F("HTTP/1.1 200 OK"));
-      client.println(F("Content-Type: text/html\r\n"));
-      client.println();
-      client.println(F("Peticion no registrada"));
-#if DEBUG
-      Serial.println(F("Peticion no registrada"));
-#endif
-      client.flush();
-      client.stop();  //Cierro el cliente
-    }
-  }
 }
