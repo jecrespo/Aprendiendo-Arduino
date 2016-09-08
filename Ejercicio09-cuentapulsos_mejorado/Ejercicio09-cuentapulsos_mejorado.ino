@@ -10,7 +10,7 @@ int ledState = 0;
 
 void setup() {
   // initialize the button pin as a input:
-  pinMode(buttonPin, INPUT);
+  pinMode(buttonPin, INPUT_PULLUP); //Resistencia de pullup interna
   // initialize the LED as an output:
   pinMode(ledPin, OUTPUT);
   // initialize serial communication:
