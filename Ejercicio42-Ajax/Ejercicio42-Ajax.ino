@@ -30,8 +30,8 @@ void setup()
   Serial.println(VERSION);
   Ethernet.begin(mac, ip, dns_server, gateway, subnet);
   server.begin();
-  pinMode(13, OUTPUT);	//Built-in Led
-  digitalWrite(13, led);
+  pinMode(8, OUTPUT);
+  digitalWrite(8, led);
   pinMode(A0, INPUT);
   pinMode(A1, INPUT);
   pinMode(A2, INPUT);
@@ -48,13 +48,13 @@ void loop()
   if (((lectura_A1) > umbral) && !led && !manual) //Solo regulo si el no está en manual
   {
     led = 1;
-    digitalWrite(13, led);
+    digitalWrite(8, led);
     Serial.println("Enciendo Led");
   }
   if (((lectura_A1) < (umbral + 10)) && led && !manual) //hiteresis = 10
   {
     led = 0;
-    digitalWrite(13, led);
+    digitalWrite(8, led);
     Serial.println("Apago Led");
   }
 
@@ -196,7 +196,7 @@ void cambioManual(EthernetClient &client_ajax, String valor) {
   if (valor == "ON") {
     manual = 1;
     led = 1;
-    digitalWrite(13, led);
+    digitalWrite(8, led);
     Serial.println("Enciendo Led Manualmente");
   }
   else if (valor == "OFF") {

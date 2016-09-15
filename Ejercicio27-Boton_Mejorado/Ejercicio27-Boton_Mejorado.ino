@@ -41,8 +41,8 @@ void setup()
   //Inicializar Ethernet
   Ethernet.begin(mac, ip, gateway, subnet);
 
-  pinMode(13, OUTPUT);
-  digitalWrite(13, LOW);
+  pinMode(8, OUTPUT);
+  digitalWrite(8, LOW);
   led_state = LOW;
 
   //Comienzo a escuchar cliente ethernet
@@ -70,7 +70,7 @@ void loop()
     else if (recibido.startsWith("POST / HTTP/1.1")) {
       Serial.println("------> Cambio estado LED");
       led_state = !led_state;
-      digitalWrite(13, led_state);  //cambio el estado del led
+      digitalWrite(8, led_state);  //cambio el estado del led
       muestraWeb(client);
     }
     else {

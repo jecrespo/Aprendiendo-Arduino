@@ -15,8 +15,8 @@ boolean led_state = LOW;
 void setup() {
   Serial.begin(9600);
   Serial.println(F("Inicializando..."));
-  pinMode(13, OUTPUT);
-  digitalWrite(13, LOW);
+  pinMode(8, OUTPUT);
+  digitalWrite(8, LOW);
   led_state = LOW;
 
   Wifi.begin();
@@ -40,11 +40,11 @@ void process(WifiData client) {
   Serial.println(command);
 
   if (command == "/arduino/webserver/on") {
-    digitalWrite(13, HIGH);
+    digitalWrite(8, HIGH);
     led_state = HIGH;
   }
   if (command == "/arduino/webserver/off") {
-    digitalWrite(13, LOW);
+    digitalWrite(8, LOW);
     led_state = LOW;
   }
   
