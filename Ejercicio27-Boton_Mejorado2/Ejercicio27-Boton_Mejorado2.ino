@@ -57,7 +57,7 @@ void loop()
   //Si hay in cliente entrante, hay caracteres por leer
   EthernetClient client = server.available();
   if (client) {
-    while (server.available()) {
+    while (client.available()) {
       recibido += char(client.read());
     }
     Serial.println("He recibido por ethernet: ");

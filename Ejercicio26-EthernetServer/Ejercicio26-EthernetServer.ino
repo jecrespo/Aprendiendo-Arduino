@@ -30,11 +30,11 @@ void loop()
   // if an incoming client connects, there will be bytes available to read:
   EthernetClient client = server.available();
   if (client > 0) {
-    server.println("HTTP/1.0 200K");
-    server.println();
+    client.println("HTTP/1.0 200K");
+    client.println();
     // read bytes from the incoming client and write them back
     // to any clients connected to the server:
-    while (server.available() > 0){
+    while (client.available() > 0){
     char inChar = client.read();
     client.write(inChar);
     Serial.print(inChar);
@@ -42,9 +42,9 @@ void loop()
       //client.stop();
     //}
     }
-    server.print("He leido por el puerto analogico: ");
-    server.println(analogRead(A0));
-    server.println();
+    client.print("He leido por el puerto analogico: ");
+    client.println(analogRead(A0));
+    client.println();
     client.stop();
   }
 }
