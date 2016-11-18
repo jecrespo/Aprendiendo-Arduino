@@ -6,18 +6,6 @@
 
 byte mac[] = {0x90, 0xA2, 0xDA, 0x0F, 0x70, 0xYY};	//Sustituir YY por el numero de MAC correcto
 
-byte ip[] = {
-  10, 22, 72, 31
-};
-byte DNS[] = {
-  8, 8, 8, 8
-};
-byte gateway[] = {
-  10, 22, 72, 1
-};
-byte subnet[] = {
-  255, 255, 255, 0
-};
 char url[] = "api.thingspeak.com";
 
 EthernetClient client;
