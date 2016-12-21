@@ -21,7 +21,7 @@ int16_t AcX, AcY, AcZ, GyX, GyY, GyZ;
 //Angulos
 float Acc[2];
 float Gy[2];
-float Angle[2];
+float Angle[2] = {0,0};
 
 //servo
 Servo myservo;
@@ -58,7 +58,8 @@ void loop()
   Serial.println("Angulo Acelerometro Y: " + String(Acc[1]));
 
   //Indico posici�n al servo
-  myservo.write(Acc[0]);
+  myservo.write(map(Acc[0],-90,90,0,180));
+  Serial.println("Angulo servo: " + String(map(Acc[0],-90,90,0,180)));
 
   //Leer los valores del Giroscopio
   Wire.beginTransmission(MPU);
