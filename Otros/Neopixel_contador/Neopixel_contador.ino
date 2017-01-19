@@ -1,9 +1,12 @@
 #include <FastLED.h>
 #include <Timer.h>
+#include <Servo.h>
+
 #define NUM_LEDS 64
 #define DATA_PIN 6
 
 CRGB leds[NUM_LEDS];
+Servo myservo;
 
 Timer t;
 int minuteEvent;
@@ -14,6 +17,9 @@ int minutos = 0;
 void setup() {
   Serial.begin(9600);
   FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
+
+  myservo.attach(7);
+  myservo.write(180);
 
   minuteEvent = t.every(60000, minuto);
   secondEvent = t.every(1000, segundo);
@@ -29,6 +35,8 @@ void setup() {
   //clear the existing led values
   FastLED.clear();
   FastLED.show();
+
+  mueve_servo();
 }
 
 void loop() {
@@ -45,6 +53,7 @@ void minuto() {
       leds[dot].green = 15;
       leds[dot].blue = 0;
       FastLED.show();
+      mueve_servo();
     }
   }
   if (minutos  == 20) {
@@ -53,6 +62,7 @@ void minuto() {
       leds[dot].red = 15;
       leds[dot].blue = 0;
       FastLED.show();
+      mueve_servo();
     }
   }
   if (minutos  == 30) {
@@ -60,6 +70,7 @@ void minuto() {
       leds[dot].red = 15;
       leds[dot].blue = 15;
       FastLED.show();
+      mueve_servo();
     }
   }
   if (minutos  == 40) {
@@ -67,12 +78,16 @@ void minuto() {
       leds[dot].red = 15;
       leds[dot].blue = 0;
       FastLED.show();
+      mueve_servo();
     }
   }
   if (minutos  == 50) {
     t.stop(minuteEvent);
     t.stop(secondEvent);
     t.every(1000, finalizar);
+    mueve_servo();
+    mueve_servo();
+    mueve_servo();
   }
 }
 
@@ -97,5 +112,26 @@ void finalizar() {
   }
   encendido = !encendido;
   FastLED.show();
+}
+
+void mueve_servo() {
+  for (int pos = 180; pos >= 0; pos -= 1) {
+    myservo.write(pos);
+    delay(5);
+  }
+  for (int pos = 0; pos <= 180; pos += 1) {
+    // in steps of 1 degree
+    myservo.write(pos);
+    delay(5);
+  }
+  for (int pos = 180; pos >= 0; pos -= 1) {
+    myservo.write(pos);
+    delay(5);
+  }
+  for (int pos = 0; pos <= 180; pos += 1) {
+    // in steps of 1 degree
+    myservo.write(pos);
+    delay(5);
+  }
 }
 
