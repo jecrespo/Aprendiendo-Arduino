@@ -53,8 +53,8 @@ void minuto() {
       leds[dot].green = 15;
       leds[dot].blue = 0;
       FastLED.show();
-      mueve_servo();
     }
+    mueve_servo();
   }
   if (minutos  == 20) {
     for (int dot = 10; dot <= minutos - 1; dot++) {
@@ -62,24 +62,24 @@ void minuto() {
       leds[dot].red = 15;
       leds[dot].blue = 0;
       FastLED.show();
-      mueve_servo();
     }
+    mueve_servo();
   }
   if (minutos  == 30) {
     for (int dot = 20; dot <= minutos - 1; dot++) {
       leds[dot].red = 15;
       leds[dot].blue = 15;
       FastLED.show();
-      mueve_servo();
     }
+    mueve_servo();
   }
   if (minutos  == 40) {
     for (int dot = 30; dot <= minutos - 1; dot++) {
       leds[dot].red = 15;
       leds[dot].blue = 0;
       FastLED.show();
-      mueve_servo();
     }
+    mueve_servo();
   }
   if (minutos  == 50) {
     t.stop(minuteEvent);
