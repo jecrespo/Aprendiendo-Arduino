@@ -1,5 +1,3 @@
-
-
 int led = 13;
 void enciendo() {
 	Serial.println("Enciendo...");

@@ -6,10 +6,10 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(13, HIGH);  
+  digitalWrite(led, HIGH);  
   enciendo();
   delay(1000);              
-  digitalWrite(13, LOW);  
+  digitalWrite(led, LOW);  
   apago();
   delay(1000);
 }
