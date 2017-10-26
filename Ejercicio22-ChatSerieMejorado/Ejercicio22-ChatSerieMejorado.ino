@@ -27,6 +27,8 @@ void setup() {
   mySerial.begin (4800);	//probar a poner velocidades diferentes en cada punto.
   // reserve 200 bytes for the inputString:
   outputString.reserve(200);	//Maximo de 200 caracteres que podemos trabajar con este programa
+  pinMode(PIN_RX,OUTPUT);
+  pinMode(PIN_TX,OUTPUT);
 }
 
 void loop()
