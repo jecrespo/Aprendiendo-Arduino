@@ -64,7 +64,7 @@ void loop() {
   Serial.print(" ");
   Serial.print(threshold);
   Serial.print(" ");
-  Serial.println(alarma * 1024);
+  Serial.println(alarma * 20);
   delay(50);
   delay(50);
 }
